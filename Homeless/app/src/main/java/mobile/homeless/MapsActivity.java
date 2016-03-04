@@ -20,6 +20,8 @@ import org.json.JSONObject;
 
 
 import java.io.Console;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -35,7 +37,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
     }
 
+    private List<Person> parseJsonList(String strJson) {
 
+        List<Person> list = new ArrayList<Person>();
+        try {
+            JSONArray  jsonArray = new JSONArray(strJson);
+
+            for(int i=0; i < jsonArray.length(); i++){
+                Person       sdf = new Person();
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                sdf.setDescription(jsonObject.getString("Description"));
+                sdf.setLatitude(Double.parseDouble(jsonObject.getString("Latitude")));
+                sdf.setLongitude(Double.parseDouble(jsonObject.getString("Longitude")));
+                sdf.setPersonneId(jsonObject.getString("PersonneId"));
+                sdf.setTitre(jsonObject.getString("Titre"));
+                list.add(sdf);
+            }
+        } catch (JSONException e) {e.printStackTrace();}
+        return list;
+    }
+
+    private void setMarker(List<Person> list, GoogleMap googleMap)
+    {
+        mMap = googleMap;
+        Person currentSdf;
+        for (int i=0; i < list.size(); i++)
+        {
+            currentSdf = list.get(i);
+            LatLng mLatLngSdf = new LatLng(currentSdf.getLatitude(),currentSdf.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(mLatLngSdf).title(currentSdf.getTitre()));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(mLatLngSdf));
+        }
+
+    }
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -62,28 +96,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String strJson=
                 "[{\"PersonneId\":1,\"Latitude\":48.861832,\"Longitude\":2.338057,\"Titre\":\"Test\",\"Description\":\"Coucou\"}" +
                 ",{\"PersonneId\":2,\"Latitude\":48.86642,\"Longitude\":2.337307,\"Titre\":\"Personne\",\"Description\":\"Bonsoir\"}" +
-                ",{\"PersonneId\":3,\"Latitude\":48.86173,\"Longitude\":2.344565,\"Titre\":\"Nicolas\",\"Description\":\"Il as faim\"}]";
-        try {
-            JSONArray  jsonArray = new JSONArray(strJson);
+                ",{\"PersonneId\":3,\"Latitude\":48.86173,\"Longitude\":2.344565,\"Titre\":\"Nicolas\",\"Description\":\"Il as faim\"}]" +
+                ",{\"PersonneId\":4,\"Latitude\":48.86259,\"Longitude\":2.334894,\"Titre\":\"Adrien\",\"Description\":\"Il a soif\"}]" +
+                ",{\"PersonneId\":5,\"Latitude\":48.86348,\"Longitude\":2.354214,\"Titre\":\"Quentin\",\"Description\":\"Il as besoin d'heroine\"}]";
 
-            for(int i=0; i < jsonArray.length(); i++){
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                String id = jsonObject.getString("PersonneId");
-                String lat = jsonObject.getString("Latitude");
-                String lon = jsonObject.getString("Longitude");
-                String titre = jsonObject.getString("Titre");
-                String desc = jsonObject.getString("Description");
-                Double lati = Double.parseDouble(lat);
-                Double longi = Double.parseDouble(lon);
-
-                LatLng mLatLngSdf = new LatLng(lati, longi);
-                mMap.addMarker(new MarkerOptions().position(mLatLngSdf).title(titre));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(mLatLng));
-
-//                System.out.println("TOTO");
-//                System.out.println(id);
-//                System.out.println(lat);
-            }
-        } catch (JSONException e) {e.printStackTrace();}
+        ;
+        setMarker(parseJsonList(strJson), mMap);
     }
 }
