@@ -7,10 +7,12 @@ import android.location.LocationManager;
 import android.util.Log;
 import android.content.Context;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -38,11 +40,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private List<Person> parseJsonList(String strJson) {
-
         List<Person> list = new ArrayList<Person>();
         try {
             JSONArray  jsonArray = new JSONArray(strJson);
-
             for(int i=0; i < jsonArray.length(); i++){
                 Person       sdf = new Person();
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -68,7 +68,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.addMarker(new MarkerOptions().position(mLatLngSdf).title(currentSdf.getTitre()));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(mLatLngSdf));
         }
-
     }
     /**
      * Manipulates the map once available.
@@ -90,8 +89,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         System.out.println(longitude);
         System.out.println(latitude);
         LatLng mLatLng = new LatLng(latitude, longitude);
-        mMap.addMarker(new MarkerOptions().position(mLatLng).title("My Location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(mLatLng));
+//        CameraUpdate center= CameraUpdateFactory.newLatLng(mLatLng);
+//        CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
+//        mMap.moveCamera(center);
+//        mMap.animateCamera(zoom);
+        mMap.addMarker(new MarkerOptions().position(mLatLng).title("My Location").snippet("and snipet").
+                icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 13));
 
         String strJson=
                 "[{\"PersonneId\":1,\"Latitude\":48.861832,\"Longitude\":2.338057,\"Titre\":\"Test\",\"Description\":\"Coucou\"}" +
@@ -99,7 +103,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 ",{\"PersonneId\":3,\"Latitude\":48.86173,\"Longitude\":2.344565,\"Titre\":\"Nicolas\",\"Description\":\"Il as faim\"}" +
                 ",{\"PersonneId\":4,\"Latitude\":48.86259,\"Longitude\":2.334894,\"Titre\":\"Adrien\",\"Description\":\"Il a soif\"}" +
                 ",{\"PersonneId\":5,\"Latitude\":48.86348,\"Longitude\":2.354214,\"Titre\":\"Quentin\",\"Description\":\"Il as besoin d'heroine\"}]";
-
         ;
         setMarker(parseJsonList(strJson), mMap);
     }
