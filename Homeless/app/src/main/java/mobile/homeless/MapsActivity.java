@@ -14,6 +14,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
 import java.io.Console;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -54,9 +59,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(mLatLng).title("My Location"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(mLatLng));
 
-        
-        //requete API
-        // REcupere toutes les personnes
-        // Je parse ->
+        String strJson=
+                "[{\"PersonneId\":1,\"Latitude\":48.861832,\"Longitude\":2.338057,\"Titre\":\"Test\",\"Description\":\"Coucou\"}" +
+                ",{\"PersonneId\":2,\"Latitude\":48.86642,\"Longitude\":2.337307,\"Titre\":\"Personne\",\"Description\":\"Bonsoir\"}" +
+                ",{\"PersonneId\":3,\"Latitude\":48.86173,\"Longitude\":2.344565,\"Titre\":\"Nicolas\",\"Description\":\"Il as faim\"}]";
+        try {
+            JSONArray  jsonArray = new JSONArray(strJson);
+
+            for(int i=0; i < jsonArray.length(); i++){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String id = jsonObject.getString("PersonneId");
+                String lat = jsonObject.getString("Latitude");
+                String lon = jsonObject.getString("Longitude");
+                String titre = jsonObject.getString("Titre");
+                String desc = jsonObject.getString("Description");
+                Double lati = Double.parseDouble(lat);
+                Double longi = Double.parseDouble(lon);
+
+                LatLng mLatLngSdf = new LatLng(lati, longi);
+                mMap.addMarker(new MarkerOptions().position(mLatLngSdf).title(titre));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(mLatLng));
+
+//                System.out.println("TOTO");
+//                System.out.println(id);
+//                System.out.println(lat);
+            }
+        } catch (JSONException e) {e.printStackTrace();}
     }
 }
