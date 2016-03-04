@@ -96,8 +96,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String strJson=
                 "[{\"PersonneId\":1,\"Latitude\":48.861832,\"Longitude\":2.338057,\"Titre\":\"Test\",\"Description\":\"Coucou\"}" +
                 ",{\"PersonneId\":2,\"Latitude\":48.86642,\"Longitude\":2.337307,\"Titre\":\"Personne\",\"Description\":\"Bonsoir\"}" +
-                ",{\"PersonneId\":3,\"Latitude\":48.86173,\"Longitude\":2.344565,\"Titre\":\"Nicolas\",\"Description\":\"Il as faim\"}]" +
-                ",{\"PersonneId\":4,\"Latitude\":48.86259,\"Longitude\":2.334894,\"Titre\":\"Adrien\",\"Description\":\"Il a soif\"}]" +
+                ",{\"PersonneId\":3,\"Latitude\":48.86173,\"Longitude\":2.344565,\"Titre\":\"Nicolas\",\"Description\":\"Il as faim\"}" +
+                ",{\"PersonneId\":4,\"Latitude\":48.86259,\"Longitude\":2.334894,\"Titre\":\"Adrien\",\"Description\":\"Il a soif\"}" +
                 ",{\"PersonneId\":5,\"Latitude\":48.86348,\"Longitude\":2.354214,\"Titre\":\"Quentin\",\"Description\":\"Il as besoin d'heroine\"}]";
 
         ;
