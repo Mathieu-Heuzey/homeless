@@ -16,18 +16,34 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import com.loopj.android.http.*;
 import org.json.JSONArray;
+import cz.msebera.android.httpclient.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+
+    private void showPersonOnMap() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        client.get("http://163.5.84.232/WebService/api/Personnes", params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                setMarkers(JSONToListPerson(response));
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                Log.d("ShowPerson", "ERROR");
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,33 +55,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
     }
 
-    private List<Person> parseJsonList(String strJson) {
-        List<Person> list = new ArrayList<Person>();
+    private List<Person> JSONToListPerson(JSONArray jsonArray) {
+        List<Person> listPerson = new ArrayList<Person>();
         try {
-            JSONArray  jsonArray = new JSONArray(strJson);
             for(int i=0; i < jsonArray.length(); i++){
-                Person       sdf = new Person();
+                Person person = new Person();
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                sdf.setDescription(jsonObject.getString("Description"));
-                sdf.setLatitude(Double.parseDouble(jsonObject.getString("Latitude")));
-                sdf.setLongitude(Double.parseDouble(jsonObject.getString("Longitude")));
-                sdf.setPersonneId(jsonObject.getString("PersonneId"));
-                sdf.setTitre(jsonObject.getString("Titre"));
-                list.add(sdf);
+                person.setPersonneId(jsonObject.getString("PersonneId"));
+                person.setLatitude(Double.parseDouble(jsonObject.getString("Latitude")));
+                person.setLongitude(Double.parseDouble(jsonObject.getString("Longitude")));
+                person.setTitre(jsonObject.getString("Titre"));
+                person.setDescription(jsonObject.getString("Description"));
+                listPerson.add(person);
             }
         } catch (JSONException e) {e.printStackTrace();}
-        return list;
+        return listPerson;
     }
 
-    private void setMarker(List<Person> list, GoogleMap googleMap)
-    {
-        mMap = googleMap;
-        Person currentSdf;
-        for (int i=0; i < list.size(); i++)
+    private void setMarkers(List<Person> listPerson) {
+        for (Person person : listPerson)
         {
-            currentSdf = list.get(i);
-            LatLng mLatLngSdf = new LatLng(currentSdf.getLatitude(),currentSdf.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(mLatLngSdf).title(currentSdf.getTitre()));
+            LatLng mLatLngSdf = new LatLng(person.getLatitude(), person.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(mLatLngSdf).title(person.getTitre()));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(mLatLngSdf));
         }
     }
@@ -82,12 +93,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        //Ma position
         LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         double longitude = location.getLongitude();
         double latitude = location.getLatitude();
-        System.out.println(longitude);
-        System.out.println(latitude);
         LatLng mLatLng = new LatLng(latitude, longitude);
 //        CameraUpdate center= CameraUpdateFactory.newLatLng(mLatLng);
 //        CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
@@ -97,13 +107,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 13));
 
-        String strJson=
-                "[{\"PersonneId\":1,\"Latitude\":48.861832,\"Longitude\":2.338057,\"Titre\":\"Test\",\"Description\":\"Coucou\"}" +
-                ",{\"PersonneId\":2,\"Latitude\":48.86642,\"Longitude\":2.337307,\"Titre\":\"Personne\",\"Description\":\"Bonsoir\"}" +
-                ",{\"PersonneId\":3,\"Latitude\":48.86173,\"Longitude\":2.344565,\"Titre\":\"Nicolas\",\"Description\":\"Il as faim\"}" +
-                ",{\"PersonneId\":4,\"Latitude\":48.86259,\"Longitude\":2.334894,\"Titre\":\"Adrien\",\"Description\":\"Il a soif\"}" +
-                ",{\"PersonneId\":5,\"Latitude\":48.86348,\"Longitude\":2.354214,\"Titre\":\"Quentin\",\"Description\":\"Il as besoin d'heroine\"}]";
-        ;
-        setMarker(parseJsonList(strJson), mMap);
+        showPersonOnMap();
     }
 }
