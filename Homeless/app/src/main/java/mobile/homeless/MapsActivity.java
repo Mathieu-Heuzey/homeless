@@ -1,5 +1,7 @@
 package mobile.homeless;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import com.loopj.android.http.*;
@@ -24,11 +27,14 @@ import cz.msebera.android.httpclient.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mMap;
+    private List<Person> listPerson;
+    private HashMap<Marker, Person> mHashMap = new HashMap<Marker, Person>();
 
     private void showPersonOnMap() {
         AsyncHttpClient client = new AsyncHttpClient();
@@ -58,7 +64,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private List<Person> JSONToListPerson(JSONArray jsonArray) {
-        List<Person> listPerson = new ArrayList<Person>();
+        listPerson = new ArrayList<Person>();
         try {
             for(int i=0; i < jsonArray.length(); i++){
                 Person person = new Person();
@@ -78,7 +84,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (Person person : listPerson)
         {
             LatLng mLatLngSdf = new LatLng(person.getLatitude(), person.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(mLatLngSdf).title(person.getTitre()));
+            Marker marker = mMap.addMarker(new MarkerOptions().position(mLatLngSdf).title(person.getTitre()).snippet(person.getDescription()));
+            mHashMap.put(marker, person);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(mLatLngSdf));
         }
     }
@@ -94,6 +101,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        mMap.setOnInfoWindowClickListener(this);
 
         //Ma position
         LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
@@ -116,5 +125,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Do something in response to button
         Intent intent = new Intent(this, AjoutSdf.class);
         startActivity(new Intent(getApplicationContext(), AjoutSdf.class));
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Person person = mHashMap.get(marker);
+
+        Intent intent = new Intent(this, DetailPerson.class);
+        intent.putExtra("Titre", person.getTitre());
+        intent.putExtra("Description", person.getDescription());
+        startActivity(intent);
     }
 }

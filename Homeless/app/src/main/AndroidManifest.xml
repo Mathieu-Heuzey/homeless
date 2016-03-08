@@ -40,6 +40,10 @@
         <activity
             android:name=".AjoutSdf"
             android:label="@string/title_activity_ajout_sdf"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".DetailPerson"
+            android:label="@string/title_activity_detail_person"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
