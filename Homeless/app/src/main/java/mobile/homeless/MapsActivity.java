@@ -121,10 +121,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         showPersonOnMap();
     }
 
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        //When BACK BUTTON is pressed, the activity on the stack is restarted
+        //Do what you want on the refresh procedure here
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();  // Always call the superclass method first
+    }
+
     public void localisationSdf(View view) {
         // Do something in response to button
         Intent intent = new Intent(this, AjoutSdf.class);
+        onPause();
         startActivity(new Intent(getApplicationContext(), AjoutSdf.class));
+        onRestart();
     }
 
     @Override
