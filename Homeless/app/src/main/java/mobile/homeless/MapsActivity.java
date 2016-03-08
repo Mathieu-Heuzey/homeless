@@ -1,11 +1,13 @@
 package mobile.homeless;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 import android.content.Context;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -108,5 +110,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 13));
 
         showPersonOnMap();
+    }
+
+    public void localisationSdf(View view) {
+        // Do something in response to button
+        Intent intent = new Intent(this, AjoutSdf.class);
+        startActivity(new Intent(getApplicationContext(), AjoutSdf.class));
     }
 }
