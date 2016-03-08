@@ -47,4 +47,14 @@
         android:layout_below="@+id/textView2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirmez"
+        android:id="@+id/Bconfirmez"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="saveDescription"
+        android:layout_marginBottom="182dp" />
 </RelativeLayout>
