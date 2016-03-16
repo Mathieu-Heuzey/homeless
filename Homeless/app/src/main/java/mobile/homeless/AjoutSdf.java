@@ -74,8 +74,8 @@ public class AjoutSdf extends AppCompatActivity {
         RequestParams params = new RequestParams();
         params.put("Titre", titre);
         params.put("Description", description);
-        params.put("Latitude", -37);
-        params.put("Longitude", -66);
+        params.put("Latitude", latitude);
+        params.put("Longitude", longitude);
         client.post("http://163.5.84.232/WebService/api/Personnes", params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String response) {
