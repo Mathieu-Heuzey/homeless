@@ -81,6 +81,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void setMarkers(List<Person> listPerson) {
+        mMap.clear();
         for (Person person : listPerson)
         {
             LatLng mLatLngSdf = new LatLng(person.getLatitude(), person.getLongitude());
@@ -114,8 +115,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
 //        mMap.moveCamera(center);
 //        mMap.animateCamera(zoom);
-        mMap.addMarker(new MarkerOptions().position(mLatLng).title("My Location").snippet("and snipet").
-                icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+//        mMap.addMarker(new MarkerOptions().position(mLatLng).title("My Location").snippet("and snipet").
+//                icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 13));
 
         showPersonOnMap();
@@ -124,6 +125,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onRestart() {
         super.onRestart();
+        showPersonOnMap();
 
         //When BACK BUTTON is pressed, the activity on the stack is restarted
         //Do what you want on the refresh procedure here
@@ -156,6 +158,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Intent intent = new Intent(this, DetailPerson.class);
         intent.putExtra("Titre", person.getTitre());
         intent.putExtra("Description", person.getDescription());
+        intent.putExtra("PersonneId", person.getPersonneId());
         startActivity(intent);
     }
 }

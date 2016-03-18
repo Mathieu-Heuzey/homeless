@@ -65,11 +65,6 @@ public class AjoutSdf extends AppCompatActivity {
         double longitude = location.getLongitude();
         double latitude = location.getLatitude();
 
-        Log.d("ADebugTag", "Value: " + titre);
-        Log.d("ADebugTag", "Value: " + description);
-        Log.d("ADebugTag", "Value: " + longitude);
-        Log.d("ADebugTag", "Value: " + latitude);
-
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put("Titre", titre);
